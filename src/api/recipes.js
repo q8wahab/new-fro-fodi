@@ -2,6 +2,7 @@ import instance from ".";
 
 const getAllRecipes = async () => {
   const { data } = await instance.get("/recipe");
+
   return data;
 };
 const createRecipes = async (recipeInfo) => {
@@ -22,4 +23,15 @@ const createRecipes = async (recipeInfo) => {
     throw error;
   }
 };
-export { getAllRecipes, createRecipes };
+
+const getRecipesByCategory = async (categoryId) => {
+  const { data } = await instance.get(`/recipe/category/${categoryId}`);
+  return data;
+};
+
+const getRecipesByUser = async (userId) => {
+  const { data } = await instance.get(`/user/${userId}`);
+  return data;
+};
+
+export { getAllRecipes, createRecipes, getRecipesByCategory, getRecipesByUser };

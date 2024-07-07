@@ -1,55 +1,77 @@
 import React, { Fragment, useContext } from "react";
-
 import { NavLink } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query"; // Ensure this is imported
 import UserContext from "../Context/userContext";
-
 import LogInButton from "./LoginButton";
 import RegisterButton from "./RegisterButton";
+import { me } from "../api/auth";
 
 const NavBar = () => {
-  const [user, setUser] = useContext(UserContext);
-  console.log(user);
+  const [user] = useContext(UserContext);
+
+  const { data: profileData, isLoading } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: () => me(user?.id),
+    enabled: !!user, // Only run the query if the user is logged in
+  });
+
   return (
     <Fragment>
-      <div className="w-full h-[72px] flex justify-center bg-white items-center  p-9">
-        <div className="justify-start items-center gap-2 flex cursor-pointer">
-          <div className=" flex justify-start items-center space-x-6 px-20 ">
-            <div className="rounded-md bg-green-700  text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 transition  ease-in-out  delay-50  hover:-translate-y-1">
-              <RegisterButton />
-            </div>
-
-            <LogInButton name={"LogIn"} />
-            <div className=" flex justify-start items-center space-x-6 px-20 ">
-              {user && (
-                <>
-                  <NavLink
-                    to="/"
-                    className="text-blue-500 text-base font-bold font-['Syne'] leading-tight"
-                  >
-                    Home
-                  </NavLink>
-                  <NavLink
-                    to="/profile"
-                    className="text-blue-500 text-base font-bold font-['Syne'] leading-tight"
-                  >
-                    Profile
-                  </NavLink>
-
-                  <NavLink
-                    to="/list"
-                    className="text-blue-500 text-base font-bold font-['Syne'] leading-tight"
-                  >
-                    list of Recipes
-                  </NavLink>
-                </>
-              )}
-            </div>
+      <div className="w-full h-[72px] flex justify-between bg-white items-center p-6">
+        <div className="flex justify-start items-center gap-6">
+          <div className="rounded-md bg-green-700 text-white shadow-sm hover:bg-green-600 transition ease-in-out delay-50 hover:-translate-y-1">
+            <RegisterButton />
           </div>
+          <LogInButton name={"LogIn"} />
+          {user && (
+            <>
+              <NavLink
+                to="/"
+                className="text-blue-500 text-base font-bold leading-tight"
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/profile"
+                className="text-blue-500 text-base font-bold leading-tight"
+              >
+                Profile
+              </NavLink>
+              <NavLink
+                to="/list"
+                className="text-blue-500 text-base font-bold leading-tight"
+              >
+                List of All Recipes
+              </NavLink>
+              <NavLink
+                to={`/user/${profileData?._id}`}
+                className="text-blue-500 text-base font-bold leading-tight"
+              >
+                List of User Recipes
+              </NavLink>
+            </>
+          )}
         </div>
-        <div className=" text-blue-950 text-4xl font-normal font-['Yuji Syuku'] flex justify-start items-start w-full">
+        <div className="text-blue-950 text-4xl font-normal font-['Yuji Syuku']">
           Kuwait street food
         </div>
-        <div className="text-emerald-700 text-base font-bold font-['Syne'] leading-tight transition  ease-in-out rounded-md  delay-50 hover:-translate-y-1"></div>
+        <div className="flex items-center gap-4">
+          {user && !isLoading && profileData && (
+            <>
+              <img
+                src={
+                  `http://localhost:8000/${profileData.image}` ||
+                  "path/to/default/profile.jpg"
+                }
+                alt="Profile"
+                className="w-10 h-10 rounded-full"
+              />
+              <span className="text-blue-950 text-base font-bold">
+                {profileData.username}
+              </span>
+            </>
+          )}
+        </div>
       </div>
     </Fragment>
   );

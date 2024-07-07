@@ -1,38 +1,31 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getAllRecipes } from "../api/recipes";
+import { getRecipesByCategory } from "../api/recipes";
 
-function List() {
-  const { data: RecipeData, isLoading } = useQuery({
-    queryKey: ["getAllRecipes"],
-    queryFn: getAllRecipes,
+const CategoryRecipes = () => {
+  const { categoryId } = useParams();
+
+  const {
+    data: recipes,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["categoryRecipes", categoryId],
+    queryFn: () => getRecipesByCategory(categoryId),
   });
 
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error Occurred: {error.message}</div>;
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 text-center">Recipe List</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        Recipes in {recipes?.[0]?.category.name}
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {RecipeData?.map((recipe) => (
+        {recipes?.map((recipe) => (
           <div key={recipe._id} className="card w-96 bg-base-100 shadow-xl">
-            <figure>
-              <img
-                src={
-                  recipe.image
-                    ? `http://localhost:8000/${recipe.image}`
-                    : "path/to/default/placeholder.jpg"
-                }
-                alt={recipe.title}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src =
-                    "https://www.foodiesfeed.com/wp-content/uploads/2023/09/healthy-food.jpg";
-                }}
-              />
-            </figure>
             <div className="card-body">
               <p>Recipe ID: {recipe._id}</p>
               <h2 className="card-title">Title: {recipe.title}</h2>
@@ -53,11 +46,26 @@ function List() {
                 <p>Instructions: {recipe.instructions}</p>
               )}
             </div>
+            <figure>
+              <img
+                src={
+                  recipe.image
+                    ? `http://localhost:8000/${recipe.image}`
+                    : "path/to/default/placeholder.jpg"
+                }
+                alt={recipe.title}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://www.foodiesfeed.com/wp-content/uploads/2023/09/healthy-food.jpg";
+                }}
+              />
+            </figure>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
 
-export default List;
+export default CategoryRecipes;

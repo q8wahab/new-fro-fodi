@@ -6,6 +6,9 @@ import Profile from "./pages/Profile";
 import { checkToken } from "./api/auth";
 import NavBar from "./components/NavBar";
 import List from "./pages/list";
+import LandingPage from "./pages/LandingPage";
+import CategoryRecipes from "./pages/CategoryRecipes";
+import UserRecipe from "./pages/UserRecipe";
 
 function App() {
   const [user, setUser] = useState(false);
@@ -19,8 +22,11 @@ function App() {
       <div className="h-screen flex flex-col">
         <NavBar />
         <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/category/:categoryId" element={<CategoryRecipes />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/list" element={<List />} />
+          <Route path="/user/:userId" element={<UserRecipe />} />
         </Routes>
       </div>
     </UserContext.Provider>
