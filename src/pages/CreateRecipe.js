@@ -3,13 +3,13 @@ import { createRecipes } from "../api/recipes";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { getAllCategory } from "../api/category";
 import { getAllIngredient } from "../api/ingrediant";
+import Select from "react-select";
 
 const queryClient = new QueryClient();
 
 function CreateRecipe() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [ingredients, setIngredients] = useState("");
   const [prepTime, setPrepTime] = useState("");
   const [cookTime, setCookTime] = useState("");
   const [availableCategories, setAvailableCategories] = useState([]);
@@ -33,30 +33,40 @@ function CreateRecipe() {
 
   const getCategoryIdByName = (name) => {
     const category = availableCategories.find((cat) => cat.name === name);
-    return category ? category.id : null;
+
+    return category ? category._id : null;
   };
 
   const getIngredientIdsByName = (names) => {
-    return names.split(",").map((name) => {
+    return names.map((name) => {
       const ingredient = availableIngredients.find(
         (ing) => ing.name === name.trim()
       );
-      return ingredient ? ingredient.id : null;
+      return ingredient ? ingredient._id : null;
     });
   };
 
   const { mutate } = useMutation({
-    mutationKey: ["create Recipe"],
-    mutationFn: () => {
+    mutationKey: ["createRecipe"],
+    mutationFn: async () => {
       const categoryId = getCategoryIdByName(category);
-      const ingredientIds = getIngredientIdsByName(ingredients);
-      return createRecipes({
+      if (!categoryId) {
+        alert("Please select a valid category.");
+        return;
+      }
+      const ingredientIds = getIngredientIdsByName(
+        selectedIngredients.map((ing) => ing.value)
+      );
+
+      const payload = {
         category: categoryId,
         title,
         ingredients: ingredientIds,
         prepTime,
         cookTime,
-      });
+      };
+
+      return createRecipes(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["recipes"]);
@@ -67,6 +77,11 @@ function CreateRecipe() {
     event.preventDefault();
     mutate();
   };
+
+  const ingredientOptions = availableIngredients.map((ing) => ({
+    value: ing.name,
+    label: ing.name,
+  }));
 
   return (
     <div>
@@ -88,7 +103,7 @@ function CreateRecipe() {
           >
             <option value="">Select Category</option>
             {availableCategories.map((cat) => (
-              <option key={cat.id} value={cat.name}>
+              <option key={cat._id} value={cat.name}>
                 {cat.name}
               </option>
             ))}
@@ -116,24 +131,15 @@ function CreateRecipe() {
           >
             Ingredients
           </label>
-          <select
+          <Select
             id="ingredients"
             className="w-44 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             value={selectedIngredients}
-            onChange={(e) =>
-              setSelectedIngredients(
-                Array.from(e.target.selectedOptions, (option) => option.value)
-              )
-            }
-            multiple
+            onChange={setSelectedIngredients}
+            options={ingredientOptions}
+            isMulti
             required
-          >
-            {availableIngredients.map((ing) => (
-              <option key={ing.id} value={ing.name}>
-                {ing.name}
-              </option>
-            ))}
-          </select>
+          />
 
           <label
             htmlFor="prepTime"
