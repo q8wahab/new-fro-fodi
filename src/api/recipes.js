@@ -5,7 +5,10 @@ const getAllRecipes = async () => {
 
   return data;
 };
-const createRecipes = async (recipeInfo) => {
+const createRecipes = async (recipeInfo, image) => {
+  const formData = new FormData();
+
+  formData.append("image", image);
   try {
     const res = await instance.post("/recipe", {
       category: recipeInfo.category,

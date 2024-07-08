@@ -15,6 +15,7 @@ function CreateRecipe() {
   const [availableCategories, setAvailableCategories] = useState([]);
   const [availableIngredients, setAvailableIngredients] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     fetchCategories();
@@ -64,6 +65,7 @@ function CreateRecipe() {
         ingredients: ingredientIds,
         prepTime,
         cookTime,
+        image,
       };
 
       return createRecipes(payload);
@@ -82,6 +84,10 @@ function CreateRecipe() {
     value: ing.name,
     label: ing.name,
   }));
+
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+  };
 
   return (
     <div>
@@ -172,7 +178,14 @@ function CreateRecipe() {
             onChange={(e) => setCookTime(e.target.value)}
             required
           />
-
+          <input
+            type="file"
+            id="image"
+            name="image"
+            onChange={handleImageChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
+            required
+          />
           <button
             className="block py-1.5 px-3 m-1 text-center bg-violet-700 border rounded-md text-white hover:bg-violet-500 hover:text-gray-100 dark:text-gray-200 dark:bg-violet-700 px-4 py-3 mb-2 text-xs text-center text-white font-semibold bg-violet-600 hover:bg-violet-700 rounded-xl"
             type="submit"
