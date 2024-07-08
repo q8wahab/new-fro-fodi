@@ -122,7 +122,7 @@ const LogInButton = () => {
         </>
       ) : (
         <button
-          className="block py-1.5 px-3 m-1 text-center bg-violet-700 border rounded-md text-white hover:bg-violet-500 hover:text-gray-100 dark:text-gray-200 dark:bg-violet-700 px-4 py-3 mb-2 text-xs text-center text-white font-semibold bg-violet-600 hover:bg-violet-700 rounded-xl"
+          className="block py-1.5 px-3 m-1 text-center bg-red-900 border rounded-md text-white hover:bg-violet-500 hover:text-gray-100 dark:text-gray-200 dark:bg-violet-700 px-4 py-3 mb-2 text-xs text-center text-white font-semibold bg-violet-600 hover:bg-violet-700 rounded-xl"
           onClick={handleLogout}
         >
           Logout

@@ -9,6 +9,7 @@ import List from "./pages/list";
 import LandingPage from "./pages/LandingPage";
 import CategoryRecipes from "./pages/CategoryRecipes";
 import UserRecipe from "./pages/UserRecipe";
+import CreateRecipe from "./pages/CreateRecipe";
 
 function App() {
   const [user, setUser] = useState(false);
@@ -27,6 +28,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/list" element={<List />} />
           <Route path="/user/:userId" element={<UserRecipe />} />
+          <Route path="/create" element={<CreateRecipe />} />
         </Routes>
       </div>
     </UserContext.Provider>

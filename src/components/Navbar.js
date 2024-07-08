@@ -55,6 +55,11 @@ const NavBar = () => {
         <div className="text-blue-950 text-4xl font-normal font-['Yuji Syuku']">
           Kuwait street food
         </div>
+        <NavLink to="/create">
+          <button className="block py-1.5 px-3 m-1 text-center bg-violet-700 border rounded-md text-white hover:bg-violet-500 hover:text-gray-100 dark:text-gray-200 dark:bg-violet-700 px-4 py-3 mb-2 text-xs text-center text-white font-semibold bg-violet-600 hover:bg-violet-700 rounded-xl">
+            Create Recipe
+          </button>
+        </NavLink>
         <div className="flex items-center gap-4">
           {user && !isLoading && profileData && (
             <>
